@@ -1,0 +1,10 @@
+PyQT5
+qt-applications
+psycopg2-binary
+bcrypt
+
+
+pip install bcrypt
+pip install pyqt5
+pip install qt5-applications
+pip install qt5-tools

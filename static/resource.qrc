@@ -1,0 +1,11 @@
+<RCC>
+  <qresource prefix="res_icon">
+    <file>icons/doc_icon.svg</file>
+    <file>icons/eye.svg</file>
+    <file>icons/eye-off.svg</file>
+    <file>icons/hcu.png</file>
+    <file>icons/icon1.svg</file>
+    <file>icons/icon2.svg</file>
+    <file>icons/login_icon.svg</file>
+  </qresource>
+</RCC>

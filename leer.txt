@@ -1,0 +1,12 @@
+los archivos py de las ventanas ui  generado con qt designer de la carpeta ui_files para mas orden deben ir en la carpeta views cuando ya este el diseño ñisto y no hay nada que modificar
+si falta modificar mantener en la carpeta ui_files los archivos py 
+
+tambien cree una carpeta models para que las consultas a la base de datos esten ahi, por mientras estan en la carpeta db donde tambien esta la conexion a la bd
+por mientras esta vacio esa carpeta
+
+la carpeta msgboxes son funciones para llamar rapido solo la funcion que nesecitamos para cuando queramos que aparezca error o advertencia
+
+en el bloc de notas requeriments.txt esta las librerias que instale al entorno
+
+
+para hacer correr el login debes ir a terminal en la parte de arriba de visual code y pones new terminal activas el entorno y pone py o python main.py 
