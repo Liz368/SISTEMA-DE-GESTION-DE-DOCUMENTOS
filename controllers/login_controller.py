@@ -1,93 +1,68 @@
-from PyQt5.QtWidgets import QWidget, QMainWindow
-from views.login_ui import Login
-from ui_files.principal_ui import Ui_VentanaPrincipal
-from msgboxes import msg_boxes
-from db.login import validar_usuario
-from PyQt5.QtWidgets import QLineEdit, QAction
+from PyQt5.QtWidgets import QWidget, QAction, QLineEdit
 from PyQt5.QtGui import QIcon
-# Importamos la herramienta de estilos
+from views.login_ui import Login
+from models.usuario_model import buscar_por_username, verificar_password, get_permisos_por_rol
+from msgboxes import msg_boxes
+from controllers.ventanaPrincipal_controller import VentanaPrincipal
 
-
-# --- CLASES DE LAS VENTANAS DE DESTINO ---
-
-class VentanaPrincipal(QMainWindow, Ui_VentanaPrincipal):
+class LoginController(QWidget, Login):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
-        
-        
-# --- CONTROLADOR DE LOGIN ---
-
-class Login(QWidget, Login):
-    def __init__(self):
-        super().__init__()
-        self.setupUi(self)
-        
-        # Aplicar estilo al login también (opcional)
 
         self.btn_ingresar.setShortcut("Return")
         self.input_user.setFocus()
 
-        self.input_user.returnPressed.connect(self.autentica)
-        self.input_pass.returnPressed.connect(self.autentica)
-        self.btn_ingresar.clicked.connect(self.autentica)
-
-         # 1. Creamos el objeto QAction (el ojo)
-        # No necesitas ponerlo en el Designer, esto lo crea en memoria
+        # Configuración del ojo de la contraseña
         self.ojo_action = QAction(self)
-        
-        # 2. Le ponemos el icono inicial (ojo cerrado/ocultar)
-        self.ojo_action.setIcon(QIcon(""))
-        
-        # 3. ¡Aquí está el truco! Lo metemos dentro del TXT de password
-        # TrailingPosition significa "al final" (derecha)
+        self.ojo_action.setIcon(QIcon(":/res_icon/icons/eye-off.svg"))
         self.input_pass.addAction(self.ojo_action, QLineEdit.TrailingPosition)
-        
-        # 4. Lo conectamos a una función para que haga algo al hacerle clic
-        self.ojo_action.triggered.connect(self.toggle_pass)
 
-    # 5. La función que cambia todo
-    def toggle_pass(self):
-            if self.input_pass.echoMode() == QLineEdit.Password:
-                    # Si está oculto, lo mostramos
-                    self.input_pass.setEchoMode(QLineEdit.Normal)
-                    self.ojo_action.setIcon(QIcon(":/res_icon/icons/eye.svg"))
-            else:
-                    # Si se ve, lo ocultamos
-                    self.input_pass.setEchoMode(QLineEdit.Password)
-                    self.ojo_action.setIcon(QIcon(":/res_icon/icons/eye-off.svg"))
+        self.ojo_action.triggered.connect(self.mostrar_ocultar_pass)
+        self.btn_ingresar.clicked.connect(self.autentica)
+        self.input_pass.returnPressed.connect(self.autentica)
 
+    def mostrar_ocultar_pass(self):
+        if self.input_pass.echoMode() == QLineEdit.Password:
+            self.input_pass.setEchoMode(QLineEdit.Normal)
+            self.ojo_action.setIcon(QIcon(":/res_icon/icons/eye.svg"))
+        else:
+            self.input_pass.setEchoMode(QLineEdit.Password)
+            self.ojo_action.setIcon(QIcon(":/res_icon/icons/eye-off.svg"))
 
     def autentica(self):
-        usuario_input = self.input_user.text().strip().upper()
-        password_input = self.input_pass.text().strip()
+        user_text = self.input_user.text().strip().upper()
+        pass_text = self.input_pass.text().strip()
 
-        if not usuario_input or not password_input:
-            msg_boxes.error_msgbox("Error", "Por favor, introduzca todos los datos.")
+        if not user_text or not pass_text:
+            msg_boxes.error_msgbox("Error", "Complete los campos.")
             return
+
+        try:
+            usuario = buscar_por_username(user_text)
+            print("DEBUG: Usuario encontrado:", usuario)
+
+            if usuario and verificar_password(pass_text, usuario.get('password')):
+                if usuario.get('estado') == 0:
+                    msg_boxes.error_msgbox("Error", "Usuario inactivo.")
+                    return
+
+                #Traer rolo y permisos
+                rol = usuario.get('rol_nombre')
+                print("DEBUG: Rol del usuario:", rol)
+                permisos = get_permisos_por_rol(usuario.get('rol_id'))
+                usuario['permisos'] = permisos
         
-        datos_usuario = validar_usuario(usuario_input, password_input)
-
-        if datos_usuario:
-            usuario_id, username, nombres, nombre_rol, activo = datos_usuario
-
-            if activo == 0:
-                msg_boxes.error_msgbox("Cuenta Inactiva", "Tu usuario está desactivado.")
-                return
-
-            print(f"Acceso correcto: {nombres} | Rol: {nombre_rol}")
-
-            # 3. NAVEGACIÓN LIMPIA
-            if nombre_rol == "ADMIN":
-                self.nueva_ventana = VentanaPrincipal()
-            elif nombre_rol == "USUARIO":
-                self.nueva_ventana = VentanaPrincipal()
+                self.abrir_principal(usuario)
             else:
-                msg_boxes.error_msgbox("Error", "Rol no reconocido.")
-                return
+                msg_boxes.error_msgbox("Error", "Credenciales incorrectas.")
+        except Exception as e:
+            msg_boxes.error_msgbox("Error de Sistema", f"No se pudo completar la autenticacion.\nDetalle: {e}")
+            print("DEBUG: Excepción en autentica:", e)
 
-            self.nueva_ventana.showMaximized()
-            self.close()
-
-        else:
-            msg_boxes.error_msgbox("Error", "Credenciales incorrectas.")
+    def abrir_principal(self, usuario):
+        print("DEBUG: Entrando a abrir_principal con:", usuario)
+        self.principal = VentanaPrincipal(usuario_autenticado=usuario)
+        self.principal.showMaximized()
+        print("DEBUG: Ventana principal mostrada")
+        self.hide()  # ocultar login en lugar de cerrar

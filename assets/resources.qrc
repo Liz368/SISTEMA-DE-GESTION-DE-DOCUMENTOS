@@ -1,0 +1,40 @@
+<RCC>
+  <qresource prefix="white_icons">
+    <file>iconos/file-search.svg</file>
+    <file>iconos/file-settings.svg</file>
+    <file>iconos/category-svgrepo-com.svg</file>
+    <file>iconos/users.svg</file>
+    <file>iconos/log-out.svg</file>
+    <file>iconos/delete.svg</file>
+    <file>iconos/searchPlomo.svg</file>
+    <file>iconos/eyeWhite.svg</file>
+    <file>iconos/edit.svg</file>
+    <file>iconos/config.svg</file>
+    <file>iconos/correct-98.svg</file>
+    <file>iconos/error-35.svg</file>
+    <file>icons/calendar.svg</file>
+    <file>iconos/file-text.svg</file>
+    <file>iconos/chevron-down.svg</file>
+    <file>iconos/chevron-up.svg</file>
+    <file>iconos/hcu.png</file>
+    <file>iconos/help-circle.svg</file>
+    <file>iconos/home.svg</file>
+    <file>iconos/info.svg</file>
+    <file>iconos/menu.svg</file>
+    <file>iconos/printer.svg</file>
+    <file>iconos/search.svg</file>
+    <file>iconos/settings.svg</file>
+    <file>iconos/user.svg</file>
+    <file>iconos/x.svg</file>
+    <file>iconos/x.svg</file>
+    <file>iconos/hcu.png</file>
+    <file>iconos/search.svg</file>
+    <file>iconos/user.svg</file>
+    <file>iconos/book.svg</file>
+    <file>iconos/file-text.svg</file>
+    <file>iconos/home.svg</file>
+    <file>iconos/menu.svg</file>
+    <file>iconos/printer.svg</file>
+    <file>iconos/settings.svg</file>
+  </qresource>
+</RCC>

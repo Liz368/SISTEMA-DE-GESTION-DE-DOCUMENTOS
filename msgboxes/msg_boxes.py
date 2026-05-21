@@ -23,8 +23,11 @@ def error_msgbox(titulo, texto):
     msg_box.exec_()
 
 def warning_msgbox(titulo, texto):
-    msg_box = MsgBox(titulo, texto, QMessageBox.Icon.Warning)
-    msg_box.set_yes_no_buttons()
-    resp =  msg_box.exec_()
-    return resp
+    msg_box = QMessageBox()
+    msg_box.setWindowTitle(titulo)
+    msg_box.setText(texto)
+    msg_box.setIcon(QMessageBox.Warning)
+    msg_box.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+    resp = msg_box.exec_()
+    return resp == QMessageBox.Yes
 

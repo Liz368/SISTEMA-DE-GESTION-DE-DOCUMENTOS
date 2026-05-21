@@ -298,4 +298,4 @@ class Ui_Login(object):
         self.label_9.setToolTip(_translate("Login", "Logo"))
         self.label_6.setText(_translate("Login", "SISTEMA DE GESTIÓN DOCUMENTAL"))
         self.label_2.setText(_translate("Login", "USUARIO"))
-import resource_rc
+from assets import resource_rc
