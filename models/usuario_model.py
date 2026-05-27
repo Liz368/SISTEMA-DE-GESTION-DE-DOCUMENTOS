@@ -1,9 +1,7 @@
 from db.connection import crear_conexion
-import psycopg2
-from psycopg2 import Error
 from psycopg2.extras import RealDictCursor
-import bcrypt   # Para manejar contraseñas encriptadas
-
+from psycopg2 import Error
+import bcrypt
 
 # =====================================================================
 # METODOS DE SEGURIDAD 
@@ -14,41 +12,59 @@ def generar_hash(password_input: str) -> str:
     salt = bcrypt.gensalt()
     return bcrypt.hashpw(password_input.encode('utf-8'), salt).decode('utf-8')
 
-def verificar_password(password_input: str, password_hash: str) -> bool:
-    """Verifica si la contraseña ingresada coincide con el hash guardado"""
-    return bcrypt.checkpw(password_input.encode('utf-8'), password_hash.encode('utf-8'))
-
+def verificar_password(password_ingresada: str, password_hash: str) -> bool:
+    """
+    Compara la contraseña en texto plano con el hash de la base de datos.
+    """
+    try:
+        return bcrypt.checkpw(
+            password_ingresada.encode('utf-8'),
+            password_hash.encode('utf-8')
+        )
+    except Exception as e:
+        print(f"Error al verificar contraseña: {e}")
+        return False      
 # =====================================================================
 # FUNCIONES DE BASE DE DATOS SQL
 # =====================================================================
 
 def insert(data):
+    """Inserta un nuevo usuario asegurando el orden correcto de las columnas"""
     conn = crear_conexion()
-    
-    query = "INSERT INTO usuarios (nombres, apellidos, username, password, rol_id, estado, fecha_inicio, fecha_fin) " \
-            "VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
-
+    if not conn:
+        return False
+        
+    query = """
+        INSERT INTO usuarios (nombres, apellidos, username, password, rol_id, estado, fecha_inicio, fecha_fin) 
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+    """
     cursor = None 
     try:
         cursor = conn.cursor()
-        cursor.execute(query, list(data.values()))
+        # CORRECCIÓN: Mapeo explícito para evitar datos cruzados
+        valores = [
+            data.get('nombres'), data.get('apellidos'), data.get('username'),
+            data.get('password'), data.get('rol_id'), data.get('estado'),
+            data.get('fecha_inicio'), data.get('fecha_fin')
+        ]
+        cursor.execute(query, valores)
         conn.commit()
         return True
-        
     except Error as err:
-        print(f"Error al insertar funcion: {err}")
+        print(f"Error al insertar usuario: {err}")
         if conn:
             conn.rollback()
         return False
-        
     finally:
-        if cursor:
-            cursor.close()
-        if conn:
-            conn.close()
+        if cursor: cursor.close()
+        if conn: conn.close()
+
 
 def update(_id, data):
+    """Actualiza los datos de un usuario por su ID"""
     conn = crear_conexion()
+    if not conn:
+        return False
 
     query = """ 
         UPDATE usuarios SET 
@@ -65,46 +81,31 @@ def update(_id, data):
     cursor = None
     try:
         cursor = conn.cursor()
-        
         valores = [
-            data['nombres'],
-            data['apellidos'],
-            data['username'],
-            data['password'],
-            data['rol_id'],
-            data['estado'],
-            data['fecha_inicio'],
-            data['fecha_fin'],
-            _id
+            data.get('nombres'), data.get('apellidos'), data.get('username'),
+            data.get('password'), data.get('rol_id'), data.get('estado'),
+            data.get('fecha_inicio'), data.get('fecha_fin'), _id
         ]
-
-        print("SQL placeholders:", query.count("%s"))
-        print("Valores:", len(valores))
         cursor.execute(query, valores)
         conn.commit()
-        print("Usuario actualizado con éxito")
         return cursor.rowcount > 0
     except Error as err:
-        print(f"Error al actualizar: {err}")
+        print(f"Error al actualizar usuario: {err}")
         if conn:
             conn.rollback()
         return False
     finally:
-        if cursor:
-            cursor.close()
-        if conn:
-            conn.close()
+        if cursor: cursor.close()
+        if conn: conn.close()
+
 
 def buscar_por_username(username):
-    """
-    Busca un usuario por su nombre de usuario en la tabla usuarios,
-    incluyendo el rol asociado.
-    Devuelve un diccionario con los datos o None si no existe.
-    """
+    """Busca un usuario por su username para el Login, incluyendo su rol"""
     conn = crear_conexion()
     if not conn:
         return None
 
+    cursor = None
     try:
         cursor = conn.cursor(cursor_factory=RealDictCursor)
         cursor.execute("""
@@ -113,107 +114,82 @@ def buscar_por_username(username):
             LEFT JOIN roles r ON u.rol_id = r.rol_id
             WHERE u.username = %s
         """, (username,))
-        usuario = cursor.fetchone()
-        cursor.close()
-        conn.close()
-        return usuario
+        return cursor.fetchone()
     except Exception as e:
         print("Error en buscar_por_username:", e)
         return None 
-
-def get_permisos_por_rol(rol_id):
-    """
-    Devuelve la lista de permisos asociados a un rol.
-    Retorna una lista de diccionarios con los nombres de los permisos.
-    """
-    conn = crear_conexion()
-    if not conn:
-        return []
-
-    try:
-        cursor = conn.cursor(cursor_factory=RealDictCursor)
-        cursor.execute("""
-            SELECT p.permiso_id, p.nombre, p.descripcion
-            FROM permisos p
-            INNER JOIN rol_permiso rp ON p.permiso_id = rp.permiso_id
-            WHERE rp.rol_id = %s
-        """, (rol_id,))
-        permisos = cursor.fetchall()
-        cursor.close()
-        conn.close()
-        return permisos
-    except Exception as e:
-        print("Error en get_permisos_por_rol:", e)
-        return []
+    finally:
+        if cursor: cursor.close()
+        if conn: conn.close()
 
 
 def get_all():
-    """
-    Devuelve todos los usuarios como lista de diccionarios.
-    """
+    """Devuelve la lista completa de usuarios con sus roles unidos por INNER JOIN"""
     conn = crear_conexion()
     if not conn:
         return []
 
+    cursor = None
     try:
         cursor = conn.cursor(cursor_factory=RealDictCursor)
-        cursor.execute("SELECT * FROM usuarios")
-        usuarios = cursor.fetchall()
-        cursor.close()
-        conn.close()
-        return usuarios
+        query = """
+            SELECT 
+                u.usuario_id, u.nombres, u.apellidos, u.username,
+                u.estado, u.fecha_inicio, u.rol_id,
+                r.nombre AS rol_nombre
+            FROM usuarios u
+            INNER JOIN roles r ON u.rol_id = r.rol_id;
+        """
+        cursor.execute(query)
+        return cursor.fetchall()
     except Exception as e:
-        print("Error en get_all:", e)
+        print("Error en get_all usuarios:", e)
         return []
+    finally:
+        if cursor: cursor.close()
+        if conn: conn.close()
 
 
 def obtener_usuarios_activos():
-    """Devuelve únicamente los usuarios cuyo estado es 1 (Activo) """
+    """Devuelve únicamente los usuarios cuyo estado es TRUE (Activos) en PostgreSQL"""
     conn = crear_conexion()
+    if not conn:
+        return []
+        
     cursor = None
-    
-    # 2. En MySQL de XAMPP filtramos por 1 en lugar de TRUE
-    query = "SELECT * FROM usuarios WHERE estado = 1;"
-    
     try:
         cursor = conn.cursor(cursor_factory=RealDictCursor)
-        cursor.execute(query)
+        # CORRECCIÓN: Filtramos usando TRUE nativo de PostgreSQL
+        cursor.execute("SELECT * FROM usuarios WHERE estado = TRUE;")
         return cursor.fetchall()  
-        
     except Error as err:
         print(f"Error al obtener usuarios activos: {err}")
-        return [] # Devolvemos una lista vacía si hay un error
-        
+        return []
     finally:
-        # 3. Cerramos los recursos de forma segura
-        if cursor:
-            cursor.close()
-        if conn:
-            conn.close()
+        if cursor: cursor.close()
+        if conn: conn.close()
 
-def buscar_por_id(usuario_id):
+
+def get_usuario_by_id(usuario_id):
+    """Busca un usuario por su ID y lo devuelve directamente como diccionario"""
     conn = crear_conexion()
+    if not conn:
+        return None
+        
+    cursor = None
     query = """
         SELECT usuario_id, nombres, apellidos, username, rol_id, estado, fecha_inicio, fecha_fin
         FROM usuarios
         WHERE usuario_id = %s
     """
     try:
-        cur = conn.cursor()
-        cur.execute(query, (usuario_id,))
-        row = cur.fetchone()
-        if row:
-            return {
-                'usuario_id': row[0],
-                'nombres': row[1],
-                'apellidos': row[2],
-                'username': row[3],
-                'rol_id': row[4],
-                'estado': row[5],
-                'fecha_inicio': row[6],
-                'fecha_fin': row[7],
-            }
+        # OPTIMIZACIÓN: Al usar RealDictCursor, el return se vuelve directo y corto
+        cursor = conn.cursor(cursor_factory=RealDictCursor)
+        cursor.execute(query, (usuario_id,))
+        return cursor.fetchone()
+    except Exception as e:
+        print("Error en get_usuario_by_id:", e)
         return None
     finally:
-        cur.close()
-        conn.close()
+        if cursor: cursor.close()
+        if conn: conn.close()

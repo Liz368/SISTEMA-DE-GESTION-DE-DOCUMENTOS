@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import QDialog
 from PyQt5.QtCore import Qt, QEvent 
 from ui_files.addUser_ui import Ui_DialogAgregar 
-from models.usuario_model import buscar_por_username, insert, generar_hash
+from models.usuario_model import get_all,buscar_por_username, insert, generar_hash
 from models.rol_model import get_all_roles
 from msgboxes import msg_boxes 
 from datetime import date
@@ -38,7 +38,7 @@ class newUser(QDialog, Ui_DialogAgregar):
 
     def eventFilter(self, obj, event):
         if event.type() == QEvent.KeyPress and event.key() in (Qt.Key_Return, Qt.Key_Enter):
-            self.btn_guardar.click()
+            self.create()
             return True
         return super().eventFilter(obj, event)
     
@@ -85,8 +85,6 @@ class newUser(QDialog, Ui_DialogAgregar):
                 'nombres': nombres,
                 'apellidos': apellidos,
                 'username': username,
-                # Si usas alguna función para encriptar la contraseña (como generar_hash), la pones aquí. 
-                # Si no, dejas 'password': password
                 'password': generar_hash(password), 
                 'rol_id': rol_id,
                 'estado': estado,

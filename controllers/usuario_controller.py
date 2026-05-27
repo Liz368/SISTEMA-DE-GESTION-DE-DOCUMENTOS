@@ -1,10 +1,9 @@
 # controllers/usuario_controller.py
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QTableWidgetItem, QHBoxLayout, QPushButton, QWidget,    QAbstractItemView
+from PyQt5.QtWidgets import QTableWidgetItem, QHBoxLayout, QPushButton, QWidget, QAbstractItemView
 from PyQt5.QtCore import Qt, QSize
 
 from models.usuario_model import get_all 
-from models.rol_model import get_rol_nombre
 from msgboxes import msg_boxes 
 
 class UsuarioPage:
@@ -48,7 +47,7 @@ class UsuarioPage:
 
     def table_config(self):
         """Configura los encabezados y comportamiento de la tabla"""
-        column_header = ("Nombre Completo", "Estado", "Username", "Permisos", "Rol", "Operaciones")
+        column_header = ("Nombre Completo", "Estado", "Username", "Rol", "Fecha Inicio", "Operaciones")
         tabla = self.mainWindow.tableUSER
 
         tabla.setColumnCount(len(column_header))
@@ -98,8 +97,9 @@ class UsuarioPage:
                 nombre_completo = f"{usuario.get('nombres','')} {usuario.get('apellidos','')}".strip() or usuario.get('username','')
                 username_upper = (usuario.get('username') or '').upper()
                 rol_id = usuario.get('rol_id')
-                rol_nombre = get_rol_nombre(rol_id) or ''
+                rol_nombre = usuario.get('rol_nombre') 
                 estado = usuario.get('estado', False)
+                fecha_ingreso = str(usuario.get('fecha_inicio', ''))
 
                 # Columna 0: Nombre completo
                 item_nombre = QTableWidgetItem(nombre_completo)
@@ -112,11 +112,11 @@ class UsuarioPage:
                 # Columna 2: Username
                 tabla.setItem(row_index, 2, QTableWidgetItem(username_upper))
 
-                # Columna 3: Permisos (Pasamos el usuario_id al botón)
-                tabla.setCellWidget(row_index, 3, self.btn_permiso(usuario_id))
-
                 # Columna 4: Rol
-                tabla.setItem(row_index, 4, QTableWidgetItem(rol_nombre))
+                tabla.setItem(row_index, 3, QTableWidgetItem(rol_nombre))
+
+                # Columna 4: Fecha de Ingreso del usuario
+                tabla.setItem(row_index, 4, QTableWidgetItem(fecha_ingreso))
 
                 # Columna 5: Operaciones (Pasamos el usuario_id a los botones)
                 tabla.setCellWidget(row_index, 5, self.btn_operaciones(usuario_id))
@@ -194,31 +194,7 @@ class UsuarioPage:
         contenedor.setLayout(layout)
         return contenedor
     
-    def btn_permiso(self, usuario_id) -> QWidget:
-        """Devuelve un QWidget con el botón de permisos mapeado al ID del usuario."""
-        contenedor = QWidget()
-        layout = QHBoxLayout(contenedor)
-        layout.setContentsMargins(5, 2, 5, 2)
-        layout.setAlignment(Qt.AlignCenter)
-
-        btn_permiso = QPushButton()
-        btn_permiso.setIcon(QIcon(":/white_icons/iconos/config.svg"))
-        btn_permiso.setToolTip("Configurar Permisos")
-        
-        # Mapeado al ID correspondiente
-        btn_permiso.clicked.connect(lambda: self.delete_user(usuario_id))
-        
-        btn_permiso.setFixedSize(28, 28)   
-        btn_permiso.setIconSize(QSize(16, 16))
-        btn_permiso.setStyleSheet("""
-            QPushButton { background-color: #757575; border-radius: 4px; }
-            QPushButton:hover { background-color: #616161; }
-        """)
-
-        layout.addWidget(btn_permiso)
-        contenedor.setLayout(layout)
-        return contenedor
-
+   
     def delete_user(self, usuario_id):
         # Aquí puedes implementar tu lógica de borrado usando directamente el usuario_id
         pass
@@ -268,7 +244,7 @@ class UsuarioPage:
             return True  # Si no hay texto, no filtramos
 
         for col in range(self.mainWindow.tableUSER.columnCount()):
-            if col in (3, 5):  # Ignorar columnas con botones
+            if col == 5:  # Ignorar columnas con botones
                 continue
             item = self.mainWindow.tableUSER.item(fila, col)
             if item and texto in item.text().lower():

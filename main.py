@@ -2,7 +2,7 @@ import sys
 from PyQt5.QtWidgets import QApplication
 # Importamos el controlador (MainWindow) que acabamos de completar
 from controllers.ventanaPrincipal_controller import   VentanaPrincipal
-
+#from controllers.login_controller import LoginController
 
 def main():
     # 1. Crear la instancia de la aplicación

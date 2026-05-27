@@ -33,6 +33,11 @@ QLineEdit {
     margin-left: 13px;
 }
 
+#btn_date1, #btn_date{
+    border-bottom-left-radius: 10px;
+    border-top-left-radius: 10px;
+}
+
 QPushButton {
     background-color: rgb(41, 59, 95);
     color: rgb(255, 255, 255); 
@@ -43,11 +48,6 @@ QPushButton {
 #btn_salir {
 	background-color: rgb(181, 181, 181);
     color: rgb(0, 0, 0); 
-}
-
-#btn_date1, #btn_date2 {
-    border-bottom-right-radius: 10px;
-    border-top-right-radius: 10px;
 }
 
 QPushButton:hover {
@@ -125,6 +125,21 @@ QPushButton:pressed, #btn_salir:pressed {
       <string notr="true"/>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_8">
+      <property name="spacing">
+       <number>7</number>
+      </property>
+      <property name="leftMargin">
+       <number>11</number>
+      </property>
+      <property name="topMargin">
+       <number>11</number>
+      </property>
+      <property name="rightMargin">
+       <number>11</number>
+      </property>
+      <property name="bottomMargin">
+       <number>11</number>
+      </property>
       <item>
        <widget class="QFrame" name="frame">
         <property name="frameShape">
@@ -320,7 +335,22 @@ QPushButton:pressed, #btn_salir:pressed {
         <property name="frameShadow">
          <enum>QFrame::Raised</enum>
         </property>
-        <layout class="QHBoxLayout" name="horizontalLayout">
+        <layout class="QHBoxLayout" name="horizontalLayout_4">
+         <property name="spacing">
+          <number>5</number>
+         </property>
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
          <item>
           <layout class="QVBoxLayout" name="verticalLayout_4">
            <item>
@@ -377,12 +407,12 @@ QPushButton:pressed, #btn_salir:pressed {
           </layout>
          </item>
          <item>
-          <layout class="QVBoxLayout" name="verticalLayout_5">
+          <layout class="QVBoxLayout" name="verticalLayout_11">
            <property name="spacing">
             <number>7</number>
            </property>
            <item>
-            <widget class="QLabel" name="label_5">
+            <widget class="QLabel" name="label_7">
              <property name="font">
               <font>
                <family>Century Gothic</family>
@@ -401,8 +431,43 @@ QPushButton:pressed, #btn_salir:pressed {
              <property name="spacing">
               <number>0</number>
              </property>
-             <item alignment="Qt::AlignRight">
-              <widget class="QDateEdit" name="dateEdit">
+             <item>
+              <widget class="QPushButton" name="btn_date">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>40</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="cursor">
+                <cursorShape>ArrowCursor</cursorShape>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="icon">
+                <iconset resource="../assets/resource.qrc">
+                 <normaloff>:/res_icon/icons/calendar.svg</normaloff>:/res_icon/icons/calendar.svg</iconset>
+               </property>
+              </widget>
+             </item>
+             <item alignment="Qt::AlignLeft">
+              <widget class="QDateEdit" name="dateEdit_3">
                <property name="minimumSize">
                 <size>
                  <width>150</width>
@@ -415,37 +480,11 @@ QPushButton:pressed, #btn_salir:pressed {
                  <pointsize>10</pointsize>
                 </font>
                </property>
-              </widget>
-             </item>
-             <item alignment="Qt::AlignLeft">
-              <widget class="QPushButton" name="btn_date1">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
+               <property name="displayFormat">
+                <string>yyyy/MM/dd</string>
                </property>
-               <property name="minimumSize">
-                <size>
-                 <width>40</width>
-                 <height>0</height>
-                </size>
-               </property>
-               <property name="maximumSize">
-                <size>
-                 <width>16777215</width>
-                 <height>25</height>
-                </size>
-               </property>
-               <property name="cursor">
-                <cursorShape>PointingHandCursor</cursorShape>
-               </property>
-               <property name="text">
-                <string/>
-               </property>
-               <property name="icon">
-                <iconset resource="../assets/resource.qrc">
-                 <normaloff>:/res_icon/icons/calendar.svg</normaloff>:/res_icon/icons/calendar.svg</iconset>
+               <property name="calendarPopup">
+                <bool>true</bool>
                </property>
               </widget>
              </item>
@@ -455,9 +494,6 @@ QPushButton:pressed, #btn_salir:pressed {
          </item>
          <item>
           <layout class="QVBoxLayout" name="verticalLayout_10">
-           <property name="spacing">
-            <number>7</number>
-           </property>
            <item>
             <widget class="QLabel" name="label_6">
              <property name="font">
@@ -474,11 +510,46 @@ QPushButton:pressed, #btn_salir:pressed {
             </widget>
            </item>
            <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_4">
+            <layout class="QHBoxLayout" name="horizontalLayout">
              <property name="spacing">
               <number>0</number>
              </property>
-             <item alignment="Qt::AlignRight">
+             <item>
+              <widget class="QPushButton" name="btn_date1">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>40</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="cursor">
+                <cursorShape>ArrowCursor</cursorShape>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="icon">
+                <iconset resource="../assets/resource.qrc">
+                 <normaloff>:/res_icon/icons/calendar.svg</normaloff>:/res_icon/icons/calendar.svg</iconset>
+               </property>
+              </widget>
+             </item>
+             <item alignment="Qt::AlignLeft">
               <widget class="QDateEdit" name="dateEdit_2">
                <property name="minimumSize">
                 <size>
@@ -492,37 +563,11 @@ QPushButton:pressed, #btn_salir:pressed {
                  <pointsize>10</pointsize>
                 </font>
                </property>
-              </widget>
-             </item>
-             <item alignment="Qt::AlignLeft">
-              <widget class="QPushButton" name="btn_date2">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
+               <property name="displayFormat">
+                <string>yyyy/MM/dd</string>
                </property>
-               <property name="minimumSize">
-                <size>
-                 <width>40</width>
-                 <height>0</height>
-                </size>
-               </property>
-               <property name="maximumSize">
-                <size>
-                 <width>16777215</width>
-                 <height>25</height>
-                </size>
-               </property>
-               <property name="cursor">
-                <cursorShape>PointingHandCursor</cursorShape>
-               </property>
-               <property name="text">
-                <string/>
-               </property>
-               <property name="icon">
-                <iconset resource="../assets/resource.qrc">
-                 <normaloff>:/res_icon/icons/calendar.svg</normaloff>:/res_icon/icons/calendar.svg</iconset>
+               <property name="calendarPopup">
+                <bool>true</bool>
                </property>
               </widget>
              </item>
@@ -662,6 +707,7 @@ QPushButton:pressed, #btn_salir:pressed {
   </layout>
  </widget>
  <resources>
+  <include location="../assets/resources.qrc"/>
   <include location="../assets/resource.qrc"/>
  </resources>
  <connections>

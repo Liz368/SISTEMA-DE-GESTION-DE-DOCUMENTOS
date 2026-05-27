@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="white_icons">
+    <file>iconos/calendar.svg</file>
     <file>iconos/file-search.svg</file>
     <file>iconos/file-settings.svg</file>
     <file>iconos/category-svgrepo-com.svg</file>

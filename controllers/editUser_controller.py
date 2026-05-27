@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import QDialog
-from PyQt5.QtCore import Qt, QEvent 
+from PyQt5.QtCore import Qt, QEvent
 from ui_files.editUser_ui import  Ui_DialogEditar
-from models.usuario_model import buscar_por_username, update, generar_hash, buscar_por_id 
+from models.usuario_model import get_all, buscar_por_username, update, generar_hash, get_usuario_by_id 
 from models.rol_model import get_all_roles
 from msgboxes import msg_boxes 
 from datetime import date
@@ -25,16 +25,18 @@ class editUser(QDialog, Ui_DialogEditar):
         for campo in (self.input_nameUser, self.input_pass, self.input_nombre, self.input_apellido):
             campo.installEventFilter(self)
 
-        self.dateEdit.setDate(date.today())
+        self.dateEdit_2.setDate(date.today())
+
 
     def cargar_datos_usuario(self, usuario_id):
-        usuario = buscar_por_id(usuario_id)
+        usuario = get_usuario_by_id(usuario_id)
         if usuario:
             self.input_nameUser.setText(usuario['username'])
             self.input_nombre.setText(usuario['nombres'])
             self.input_apellido.setText(usuario['apellidos'])
             self.checkBox_activo.setChecked(usuario['estado'])
-            self.dateEdit.setDate(usuario['fecha_inicio'])
+            self.dateEdit_2.setDate(usuario['fecha_inicio'])
+
 
             # Seleccionar rol correcto
             index = self.comboBox_rol.findData(usuario['rol_id'])
@@ -55,7 +57,7 @@ class editUser(QDialog, Ui_DialogEditar):
 
     def eventFilter(self, obj, event):
         if event.type() == QEvent.KeyPress and event.key() in (Qt.Key_Return, Qt.Key_Enter):
-            self.btn_guardar.click()
+            self.update()
             return True
         return super().eventFilter(obj, event)
     
@@ -88,8 +90,8 @@ class editUser(QDialog, Ui_DialogEditar):
         apellidos = self.input_apellido.text().strip()
         
         estado = self.checkBox_activo.isChecked()
-        f_inicio = self.dateEdit.date().toPyDate() or date.today()
-        f_fin = self.dateEdit_2.date().toPyDate() 
+        f_inicio = self.dateEdit_2.date().toPyDate() or date.today()
+        f_fin = self.dateEdit_3.date().toPyDate() 
 
         rol_id =  self.comboBox_rol.currentData()
 
@@ -121,12 +123,5 @@ class editUser(QDialog, Ui_DialogEditar):
         except Exception as e:
             msg_boxes.error_msgbox("Error de Base de Datos", f"Ocurrió un error inesperado.\nDetalle: {e}")
 
-
-    def limpiar_formulario(self):
-        """Limpia todos los campos de la interfaz para un nuevo registro"""
-        for campo in (self.input_nameUser, self.input_pass, self.input_nombre, self.input_apellido):
-            campo.clear()
-        self.checkBox_activo.setChecked(True)
-        self.comboBox_rol.setCurrentIndex(0)
 
 

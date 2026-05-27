@@ -1,7 +1,8 @@
 from PyQt5.QtWidgets import QWidget, QAction, QLineEdit
 from PyQt5.QtGui import QIcon
 from views.login_ui import Login
-from models.usuario_model import buscar_por_username, verificar_password, get_permisos_por_rol
+from models.usuario_model import buscar_por_username, verificar_password
+from models.permisos_model import get_permisos_por_rol
 from msgboxes import msg_boxes
 from controllers.ventanaPrincipal_controller import VentanaPrincipal
 
@@ -41,6 +42,8 @@ class LoginController(QWidget, Login):
         try:
             usuario = buscar_por_username(user_text)
             print("DEBUG: Usuario encontrado:", usuario)
+
+            print(f"DEBUG - Comparando Texto: '{pass_text}' con Hash: '{usuario.get('password')}'")
 
             if usuario and verificar_password(pass_text, usuario.get('password')):
                 if usuario.get('estado') == 0:

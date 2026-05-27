@@ -1,5 +1,5 @@
 PyQT5
-qt-applications
+qt5-applications
 psycopg2-binary
 bcrypt
 

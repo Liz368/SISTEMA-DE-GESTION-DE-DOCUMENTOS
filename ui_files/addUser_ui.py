@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'c:\SISTEMA VER. 0\ui_files\addUser.ui'
+# Form implementation generated from reading ui file 'c:\sistema\ui_files\addUser.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.11
 #
@@ -15,6 +15,8 @@ class Ui_DialogAgregar(object):
     def setupUi(self, DialogAgregar):
         DialogAgregar.setObjectName("DialogAgregar")
         DialogAgregar.resize(603, 703)
+        DialogAgregar.setMinimumSize(QtCore.QSize(0, 0))
+        DialogAgregar.setMaximumSize(QtCore.QSize(16777215, 16777215))
         DialogAgregar.setStyleSheet("#widget, #label {\n"
 "    color: rgb(255, 255, 255);\n"
 "    background-color: rgb(41, 59, 95);\n"
@@ -47,8 +49,8 @@ class Ui_DialogAgregar(object):
 "}\n"
 "\n"
 "#btn_date1, #btn_date2 {\n"
-"    border-bottom-right-radius: 10px;\n"
-"    border-top-right-radius: 10px;\n"
+"    border-bottom-left-radius: 10px;\n"
+"    border-top-left-radius: 10px;\n"
 "}\n"
 "\n"
 "QPushButton:hover {\n"
@@ -81,7 +83,7 @@ class Ui_DialogAgregar(object):
         font.setWeight(75)
         self.label.setFont(font)
         self.label.setObjectName("label")
-        self.verticalLayout_6.addWidget(self.label, 0, QtCore.Qt.AlignLeft)
+        self.verticalLayout_6.addWidget(self.label)
         self.verticalLayout_9.addWidget(self.widget)
         self.line = QtWidgets.QFrame(DialogAgregar)
         self.line.setFrameShape(QtWidgets.QFrame.HLine)
@@ -92,6 +94,7 @@ class Ui_DialogAgregar(object):
         self.widget_2.setStyleSheet("")
         self.widget_2.setObjectName("widget_2")
         self.verticalLayout_8 = QtWidgets.QVBoxLayout(self.widget_2)
+        self.verticalLayout_8.setContentsMargins(-1, -1, 11, -1)
         self.verticalLayout_8.setObjectName("verticalLayout_8")
         self.frame = QtWidgets.QFrame(self.widget_2)
         self.frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
@@ -243,29 +246,32 @@ class Ui_DialogAgregar(object):
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_2.setSpacing(0)
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
-        self.dateEdit = QtWidgets.QDateEdit(self.frame_5)
-        self.dateEdit.setMinimumSize(QtCore.QSize(150, 0))
-        font = QtGui.QFont()
-        font.setFamily("Century Gothic")
-        font.setPointSize(10)
-        self.dateEdit.setFont(font)
-        self.dateEdit.setObjectName("dateEdit")
-        self.horizontalLayout_2.addWidget(self.dateEdit, 0, QtCore.Qt.AlignRight)
         self.btn_date1 = QtWidgets.QPushButton(self.frame_5)
+        self.btn_date1.setEnabled(False)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.btn_date1.sizePolicy().hasHeightForWidth())
         self.btn_date1.setSizePolicy(sizePolicy)
-        self.btn_date1.setMinimumSize(QtCore.QSize(40, 0))
-        self.btn_date1.setMaximumSize(QtCore.QSize(16777215, 25))
-        self.btn_date1.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.btn_date1.setMinimumSize(QtCore.QSize(0, 0))
+        self.btn_date1.setMaximumSize(QtCore.QSize(40, 16777215))
+        self.btn_date1.setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
         self.btn_date1.setText("")
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(":/res_icon/icons/calendar.svg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.btn_date1.setIcon(icon)
         self.btn_date1.setObjectName("btn_date1")
-        self.horizontalLayout_2.addWidget(self.btn_date1, 0, QtCore.Qt.AlignLeft)
+        self.horizontalLayout_2.addWidget(self.btn_date1)
+        self.dateEdit = QtWidgets.QDateEdit(self.frame_5)
+        self.dateEdit.setMinimumSize(QtCore.QSize(150, 0))
+        self.dateEdit.setMaximumSize(QtCore.QSize(16777215, 16777215))
+        font = QtGui.QFont()
+        font.setFamily("Century Gothic")
+        font.setPointSize(10)
+        self.dateEdit.setFont(font)
+        self.dateEdit.setCalendarPopup(True)
+        self.dateEdit.setObjectName("dateEdit")
+        self.horizontalLayout_2.addWidget(self.dateEdit, 0, QtCore.Qt.AlignLeft)
         self.verticalLayout_5.addLayout(self.horizontalLayout_2)
         self.horizontalLayout.addLayout(self.verticalLayout_5)
         self.verticalLayout_8.addWidget(self.frame_5)
@@ -342,6 +348,7 @@ class Ui_DialogAgregar(object):
         self.comboBox_rol.setItemText(1, _translate("DialogAgregar", "Administrador"))
         self.comboBox_rol.setItemText(2, _translate("DialogAgregar", "Usuario"))
         self.label_5.setText(_translate("DialogAgregar", "Fecha de Inicio:"))
+        self.dateEdit.setDisplayFormat(_translate("DialogAgregar", "yyyy/MM/dd"))
         self.checkBox_activo.setText(_translate("DialogAgregar", "Activo?"))
         self.btn_guardar.setText(_translate("DialogAgregar", "Guardar"))
         self.btn_salir.setText(_translate("DialogAgregar", "Cancelar"))
